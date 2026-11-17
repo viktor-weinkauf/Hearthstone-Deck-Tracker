@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <LangVersion>latest</LangVersion>
+    <HdtPath>$(LOCALAPPDATA)\HearthstoneDeckTracker\current</HdtPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Lib.Harmony" Version="2.4.3" />
+    <Compile Include="../RewindReplayRepair.cs" Link="RewindReplayRepair.cs" />
+    <Reference Include="HearthstoneDeckTracker"><HintPath>$(HdtPath)\HearthstoneDeckTracker.exe</HintPath><Private>false</Private></Reference>
+    <Reference Include="HearthWatcher"><HintPath>$(HdtPath)\HearthWatcher.dll</HintPath></Reference>
+    <Reference Include="Newtonsoft.Json"><HintPath>$(HdtPath)\Newtonsoft.Json.dll</HintPath></Reference>
+  </ItemGroup>
+</Project>
