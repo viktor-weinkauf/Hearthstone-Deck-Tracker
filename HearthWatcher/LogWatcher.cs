@@ -34,11 +34,13 @@ namespace HearthWatcher
 		public event Action<string>? OnLogLineIgnored;
 		public event Action<string>? OnLogFileFound;
 
-		public async void Start(string logDirectory)
+		public void Start(string logDirectory) => Start(logDirectory, null);
+
+		public async void Start(string logDirectory, DateTime? rewindStart)
 		{
 			if(_running)
 				return;
-			var startingPoint = GetStartingPoint(logDirectory);
+			var startingPoint = GetStartingPoint(logDirectory, rewindStart);
 			foreach(var logReader in _logWatchers)
 				logReader.Start(startingPoint, logDirectory);
 			_running = true;
@@ -73,11 +75,18 @@ namespace HearthWatcher
 			_running = false;
 		}
 
-		private DateTime GetStartingPoint(string logDirectory)
+		private DateTime GetStartingPoint(string logDirectory, DateTime? rewindStart)
 		{
 			var powerEntry = PowerLogWatcher.FindEntryPoint(logDirectory, new[] { "tag=STATE value=COMPLETE", "End Spectator" });
 			var lsEntry = LoadingScreenLogWatcher.FindEntryPoint(logDirectory, "Gameplay.Start");
-			return lsEntry > powerEntry ? lsEntry : powerEntry;
+			var latestEntry = lsEntry > powerEntry ? lsEntry : powerEntry;
+			// A lethal reroll may already have logged COMPLETE before HDT restarts
+			// its reader. Rebuild that match, rather than resuming after its result.
+			// A missing start or a newer match must not reuse an old rewind range.
+			if(rewindStart.HasValue && lsEntry != DateTime.MinValue
+			   && lsEntry <= rewindStart.Value && latestEntry > rewindStart.Value)
+				return lsEntry;
+			return latestEntry;
 		}
 
 		public async Task<bool> Stop(bool force = false)

@@ -76,7 +76,8 @@ namespace Hearthstone_Deck_Tracker.LogReader
 			_stop = false;
 			var logDirectory = Path.Combine(Config.Instance.HearthstoneDirectory, Config.Instance.HearthstoneLogsDirectoryName);
 			Log.Info($"Using Hearthstone log directory '{logDirectory}'");
-			_logWatcher.Start(logDirectory);
+			_logWatcher.Start(logDirectory, IgnoredTimeRanges.Count == 0
+				? (DateTime?)null : IgnoredTimeRanges.Min(range => range.Start));
 		}
 
 		private async Task FindHearthstone()
