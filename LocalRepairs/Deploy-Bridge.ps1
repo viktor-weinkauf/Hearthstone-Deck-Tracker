@@ -1,6 +1,7 @@
 [CmdletBinding()]
-param([string]$ArenaHelpersRoot = ([IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..\..'))))
+param([string]$ArenaHelpersRoot)
 $ErrorActionPreference = 'Stop'
+if (-not $ArenaHelpersRoot) { $ArenaHelpersRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..\..')) }
 $ArenaHelpersRoot = (Resolve-Path -LiteralPath $ArenaHelpersRoot).Path
 $hdtDir = Join-Path $env:LOCALAPPDATA 'HearthstoneDeckTracker\current'
 $hdtExe = Join-Path $hdtDir 'HearthstoneDeckTracker.exe'

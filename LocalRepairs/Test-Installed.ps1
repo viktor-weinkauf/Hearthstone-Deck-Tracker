@@ -1,9 +1,10 @@
 [CmdletBinding()]
 param(
     [string]$HdtPath = (Join-Path $env:LOCALAPPDATA 'HearthstoneDeckTracker\current'),
-    [string]$OutputDirectory = (Join-Path $PSScriptRoot '.artifacts\installed')
+    [string]$OutputDirectory
 )
 $ErrorActionPreference = 'Stop'
+if (-not $OutputDirectory) { $OutputDirectory = Join-Path $PSScriptRoot '.artifacts\installed' }
 $HdtPath = (Resolve-Path -LiteralPath $HdtPath).Path
 $hdtExe = Join-Path $HdtPath 'HearthstoneDeckTracker.exe'
 $watcherDll = Join-Path $HdtPath 'HearthWatcher.dll'
